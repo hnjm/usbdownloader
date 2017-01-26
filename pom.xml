@@ -7,6 +7,19 @@
     <groupId>name.ialert</groupId>
     <artifactId>usbdownloader</artifactId>
     <version>1.0</version>
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+    <dependencies>
+        <dependency>
+            <groupId>com.github.samuelcampos</groupId>
+            <artifactId>usbdrivedetector</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+    </dependencies>
 
 
 </project>
