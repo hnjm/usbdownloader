@@ -1,0 +1,4 @@
+# IntelliJ: All project files
+.idea/
+*.iml
+*.iws
