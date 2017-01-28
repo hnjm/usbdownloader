@@ -31,14 +31,14 @@ public class FileDownload implements Runnable {
         return Paths.get(url);
     }
 
-    protected Path getFilename(String url) {
+    protected String getFilename(String url) {
 
-        return this.getPath(url).getFileName();
+        return url.substring(url.lastIndexOf("/")+1);
     }
 
     public void downloadFile() {
 
-        Path filename = this.getFilename(this.filePath);
+        String filename = this.getFilename(this.filePath);
         Path target = this.destinationDirectory.resolve(filename);
 
         if(this.isNeedUpdateFile(target)) {
@@ -49,7 +49,7 @@ public class FileDownload implements Runnable {
 
                 try {
 
-                    System.out.println(this.filePath);
+                    System.out.println("Start downloading: "+this.filePath);
 
                     downloadUrl = new URL(this.filePath);
 
@@ -86,7 +86,8 @@ public class FileDownload implements Runnable {
             return (lastAccessTime+this.updateTime < currentTime);
 
         } catch (IOException e) {
-            e.printStackTrace();
+
+            System.out.println("File "+filePath.toString()+" has not founded");
         }
 
         return true;
