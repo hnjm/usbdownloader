@@ -51,7 +51,9 @@ public class UsbDownloader {
             try {
                 Thread.sleep(THREAD_SLEEP_TIME);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+
+                Logger.add("Error was occurred."+e.getMessage(),true);
+
             }
         }
     }
@@ -70,11 +72,11 @@ public class UsbDownloader {
 
             if(this.driveName == null || this.driveName.isEmpty()) {
 
-                System.out.println("You must set target drive name");
+                Logger.add("You must set target drive name",true);
 
             } else if(this.downloadUrls == null || this.downloadUrls.length == 0) {
 
-                System.out.println("You must set at least one url");
+                Logger.add("You must set at least one url",true);
             } else {
 
                 this.driveDirectory = cmd.getOptionValue("dir");
@@ -86,7 +88,7 @@ public class UsbDownloader {
 
         } catch (ParseException e) {
 
-            e.printStackTrace();
+            Logger.add("Unable to parse program args."+e.getMessage(),true);
         }
 
         return !error;

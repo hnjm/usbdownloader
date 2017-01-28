@@ -10,8 +10,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.concurrent.Callable;
 
-public class FileDownload implements Runnable {
+public class FileDownload implements Callable<Void> {
 
     protected String filePath;
 
@@ -39,7 +40,7 @@ public class FileDownload implements Runnable {
     public void downloadFile() {
 
         String filename = this.getFilename(this.filePath);
-        Path target = this.destinationDirectory.resolve(filename);
+        Path target = this.destinationDirectory.resolve(filename.toString());
 
         if(this.isNeedUpdateFile(target)) {
 
@@ -49,36 +50,41 @@ public class FileDownload implements Runnable {
 
                 try {
 
-                    System.out.println("Start downloading: "+this.filePath);
+                    Logger.add("Start downloading "+this.filePath);
 
                     downloadUrl = new URL(this.filePath);
 
                     try (InputStream in = downloadUrl.openStream()) {
 
+                        Logger.add("Download finished.");
+
                         this.copyFile(in, target);
 
+                        in.close();
+
                     } catch (IOException e) {
-                        e.printStackTrace();
+
+                        Logger.add("Unable to download file "+this.filePath+"."+e.getMessage());
                     }
 
                 } catch (MalformedURLException e) {
 
-                    e.printStackTrace();
+                    Logger.add("Incorrect url was given.");
                 }
 
             }
 
         } else {
 
-            System.out.println("File do not need to update");
+            Logger.add("File "+filename+" do not need to update");
         }
     }
 
-    public  boolean isNeedUpdateFile(Path filePath) {
+    public  boolean isNeedUpdateFile(Path fileDrivePath) {
 
         try {
 
-            BasicFileAttributes fileAttrs = Files.readAttributes(filePath, BasicFileAttributes.class);
+            BasicFileAttributes fileAttrs = Files.readAttributes(fileDrivePath, BasicFileAttributes.class);
 
             long lastAccessTime = fileAttrs.lastModifiedTime().toMillis();
             long currentTime = this.getCurrentTime();
@@ -87,7 +93,7 @@ public class FileDownload implements Runnable {
 
         } catch (IOException e) {
 
-            System.out.println("File "+filePath.toString()+" has not founded");
+            Logger.add("File "+fileDrivePath.toString()+" was not found.Try to download.");
         }
 
         return true;
@@ -113,15 +119,17 @@ public class FileDownload implements Runnable {
             return true;
 
         } catch (IOException e) {
-            e.printStackTrace();
+
+            Logger.add("Unable to save "+target.toString()+".Check directory permission.");
         }
 
         return false;
     }
 
-    public void run() {
+    public Void call() {
 
         this.downloadFile();
 
+        return null;
     }
 }
