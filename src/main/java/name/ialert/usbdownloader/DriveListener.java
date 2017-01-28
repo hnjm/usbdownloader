@@ -10,8 +10,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class DriveListener implements IUSBDriveListener {
 
@@ -44,8 +48,6 @@ public class DriveListener implements IUSBDriveListener {
 
     public void usbDriveEvent(USBStorageEvent event) {
 
-        System.out.println(event.getStorageDevice().getDeviceName());
-
         DeviceEventType eventType = event.getEventType();
 
         if(eventType == DeviceEventType.CONNECTED) {
@@ -53,6 +55,8 @@ public class DriveListener implements IUSBDriveListener {
             USBStorageDevice drive = event.getStorageDevice();
 
             if(this.isNecessaryDrive(drive)) {
+
+                Logger.add("Storage "+drive.getDeviceName()+" was found.",true);
 
                 this.downloadFiles(drive);
             }
@@ -69,14 +73,26 @@ public class DriveListener implements IUSBDriveListener {
 
             int threadMax = (filesCount > MAX_DOWNLOAD_THREAD) ? MAX_DOWNLOAD_THREAD : filesCount;
 
-            ExecutorService executorService = Executors.newFixedThreadPool(threadMax);
+            ExecutorService taskExecutor = Executors.newFixedThreadPool(threadMax);
 
             String driveDirectory = this.getDriveDirectoryPath(drive);
 
-            for (String url : this.downloadUrls) {
+            List<Callable<Void>> executeTasks = new ArrayList<>();
 
-                executorService.execute(new FileDownload(url, driveDirectory, this.updateTime));
+            for (String url : this.downloadUrls) {
+                executeTasks.add(new FileDownload(url, driveDirectory, this.updateTime));
             }
+
+            try {
+
+                List<Future<Void>> futures = taskExecutor.invokeAll(executeTasks);
+                Logger.output();
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+
 
         }
     }
