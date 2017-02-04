@@ -98,6 +98,9 @@ public class FileDownload implements Callable<Void> {
                     Log.warning("Incorrect url was given.");
                 }
 
+            } else {
+
+                Log.warning("Unable to write to "+this.destinationDirectory.toString()+".Please check directory permissions.");
             }
 
         } else {
