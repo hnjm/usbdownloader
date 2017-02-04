@@ -1,6 +1,8 @@
 package name.ialert.usbdownloader;
 
 
+import name.ialert.usbdownloader.logger.ConsoleLogger;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -19,6 +21,8 @@ public class FileDownload implements Callable<Void> {
     protected Path destinationDirectory;
 
     protected long updateTime;
+
+    private static final ConsoleLogger Log = ConsoleLogger.getInstance(UsbDownloader.class.getName());
 
     public FileDownload(String fileUrl,String destinationDirectory,long updateTime) {
 
@@ -50,13 +54,13 @@ public class FileDownload implements Callable<Void> {
 
                 try {
 
-                    Logger.add("Start downloading "+this.filePath);
+                    Log.info("Start downloading "+this.filePath);
 
                     downloadUrl = new URL(this.filePath);
 
                     try (InputStream in = downloadUrl.openStream()) {
 
-                        Logger.add("Download finished.");
+                        Log.info("Download finished."+this.filePath);
 
                         this.copyFile(in, target);
 
@@ -64,19 +68,20 @@ public class FileDownload implements Callable<Void> {
 
                     } catch (IOException e) {
 
-                        Logger.add("Unable to download file "+this.filePath+"."+e.getMessage());
+                        Log.warning("Unable to download file "+this.filePath+".");
+                        Log.error(e.getMessage());
                     }
 
                 } catch (MalformedURLException e) {
 
-                    Logger.add("Incorrect url was given.");
+                    Log.warning("Incorrect url was given.");
                 }
 
             }
 
         } else {
 
-            Logger.add("File "+filename+" do not need to update");
+            Log.info("File "+filename+" do not need to update");
         }
     }
 
@@ -93,7 +98,7 @@ public class FileDownload implements Callable<Void> {
 
         } catch (IOException e) {
 
-            Logger.add("File "+fileDrivePath.toString()+" was not found.Try to download.");
+            Log.info("File "+fileDrivePath.toString()+" was not found.Try to download.");
         }
 
         return true;
@@ -116,11 +121,13 @@ public class FileDownload implements Callable<Void> {
 
             Files.copy(input, target, StandardCopyOption.REPLACE_EXISTING);
 
+            Log.info("File "+target.toString()+" has been saved.");
+
             return true;
 
         } catch (IOException e) {
 
-            Logger.add("Unable to save "+target.toString()+".Check directory permission.");
+            Log.warning("Unable to save "+target.toString()+".Check directory permission.");
         }
 
         return false;

@@ -1,21 +1,14 @@
 package name.ialert.usbdownloader;
 
 
+import name.ialert.usbdownloader.logger.ConsoleLogger;
 import net.samuelcampos.usbdrivedectector.USBStorageDevice;
 import net.samuelcampos.usbdrivedectector.events.DeviceEventType;
 import net.samuelcampos.usbdrivedectector.events.IUSBDriveListener;
 import net.samuelcampos.usbdrivedectector.events.USBStorageEvent;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 public class DriveListener implements IUSBDriveListener {
 
@@ -28,6 +21,10 @@ public class DriveListener implements IUSBDriveListener {
     protected  String[] downloadUrls;
 
     protected long updateTime;
+
+    protected final static long DEFAULT_UPDATE_TIME = 86400;
+
+    private static final ConsoleLogger Log = ConsoleLogger.getInstance(DriveListener.class.getName());
 
 
     public DriveListener(String driveName,String directory,String[] urls,long updateTime) {
@@ -43,7 +40,7 @@ public class DriveListener implements IUSBDriveListener {
         this.driveName = driveName;
         this.downloadDirectory = directory;
         this.downloadUrls = urls;
-        this.updateTime = 86400;
+        this.updateTime = DEFAULT_UPDATE_TIME;
     }
 
     public void usbDriveEvent(USBStorageEvent event) {
@@ -56,7 +53,7 @@ public class DriveListener implements IUSBDriveListener {
 
             if(this.isNecessaryDrive(drive)) {
 
-                Logger.add("Storage "+drive.getDeviceName()+" was found.",true);
+                Log.info("Storage "+drive.getDeviceName()+" was found.");
 
                 this.downloadFiles(drive);
             }
@@ -77,22 +74,19 @@ public class DriveListener implements IUSBDriveListener {
 
             String driveDirectory = this.getDriveDirectoryPath(drive);
 
-            List<Callable<Void>> executeTasks = new ArrayList<>();
-
             for (String url : this.downloadUrls) {
-                executeTasks.add(new FileDownload(url, driveDirectory, this.updateTime));
+                taskExecutor.submit(new FileDownload(url, driveDirectory, this.updateTime));
             }
+
+            taskExecutor.shutdown();
 
             try {
-
-                List<Future<Void>> futures = taskExecutor.invokeAll(executeTasks);
-                Logger.output();
+                taskExecutor.awaitTermination(1, TimeUnit.MINUTES);
 
             } catch (InterruptedException e) {
-                e.printStackTrace();
+
+                Log.error("Unable to await threads termination"+e.getMessage());
             }
-
-
 
         }
     }

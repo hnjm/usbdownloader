@@ -1,28 +1,47 @@
-package name.ialert.usbdownloader;
+package name.ialert.usbdownloader.logger;
 
-import name.ialert.usbdownloader.logger.CustomFormatter;
-import name.ialert.usbdownloader.logger.ILogger;
-import name.ialert.usbdownloader.logger.StandardLogger;
+import name.ialert.usbdownloader.logger.jul.CustomFormatter;
 
 import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-public class ConsoleLogger implements ILogger {
+public class ConsoleLogger extends AbstractLogger implements ILogger {
 
     private static ConsoleLogger instance;
+
+    private ConsoleHandler consoleHandler;
 
     private Logger loggerHandler;
 
     private ConsoleLogger(String className) {
 
-        this.loggerHandler = StandardLogger.getLogger(className);
+        this.loggerHandler = Logger.getLogger(className);
+        this.loggerHandler.setUseParentHandlers(false);
 
-        ConsoleHandler customHandler = new ConsoleHandler();
-        CustomFormatter customFormatter = new CustomFormatter();
-        customHandler.setFormatter(customFormatter);
+        this.consoleHandler = new ConsoleHandler();
 
-        this.loggerHandler.addHandler(customHandler);
+        CustomFormatter formatterHandler = new CustomFormatter();
+        this.consoleHandler.setFormatter(formatterHandler);
+
+        this.loggerHandler.addHandler(this.consoleHandler);
+    }
+
+    public void setLogLevel(LogLevelType levelType) {
+
+        super.setLogLevel(levelType);
+
+        Level setupLevel = Level.INFO;
+
+        if(levelType == LogLevelType.DEBUG) {
+
+            setupLevel = Level.FINEST;
+        }
+
+        this.consoleHandler.setLevel(setupLevel);
+        this.loggerHandler.setLevel(setupLevel);
+
     }
 
     public static ConsoleLogger getInstance(String className) {
@@ -33,18 +52,20 @@ public class ConsoleLogger implements ILogger {
     }
 
     @Override
+    public void info(String message) {
+
+        this.loggerHandler.log(Level.INFO,message);
+    }
+
+    @Override
     public void error(String message) {
 
-        this.warning(message);
+        this.loggerHandler.log(Level.FINEST,message);
     }
 
     @Override
     public void warning(String message) {
 
-    }
-
-    @Override
-    public void warning(String className, String Message) {
-
+        this.loggerHandler.log(Level.WARNING,message);
     }
 }

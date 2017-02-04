@@ -1,6 +1,8 @@
 package name.ialert.usbdownloader;
 
 
+import name.ialert.usbdownloader.logger.ConsoleLogger;
+import name.ialert.usbdownloader.logger.LogLevelType;
 import net.samuelcampos.usbdrivedectector.USBDeviceDetectorManager;
 import org.apache.commons.cli.*;
 
@@ -16,6 +18,8 @@ public class UsbDownloader {
 
     private  String[] downloadUrls;
 
+    private static final ConsoleLogger Log = ConsoleLogger.getInstance(UsbDownloader.class.getName());
+
 
     public static void main(String[] args) {
 
@@ -30,6 +34,7 @@ public class UsbDownloader {
         this.addOption("d","drive","Drive name");
         this.addOption("dir","directory","Drive directory");
         this.addOption("u","urls","Download url");
+        this.addOption("debug","enable-debug",false,"Enable debug log");
 
         if(this.parseArguments(args)) {
 
@@ -52,7 +57,7 @@ public class UsbDownloader {
                 Thread.sleep(THREAD_SLEEP_TIME);
             } catch (InterruptedException e) {
 
-                Logger.add("Error was occurred."+e.getMessage(),true);
+                Log.warning("Error was occurred."+e.getMessage());
 
             }
         }
@@ -67,16 +72,20 @@ public class UsbDownloader {
         try {
             CommandLine cmd = parser.parse(this.options, args);
 
+            boolean isDebug = cmd.hasOption("debug");
+
+            if(isDebug) Log.setLogLevel(LogLevelType.DEBUG);
+
             this.driveName = cmd.getOptionValue("d");
             this.downloadUrls = cmd.getOptionValues("u");
 
             if(this.driveName == null || this.driveName.isEmpty()) {
 
-                Logger.add("You must set target drive name",true);
+                Log.info("You must set target drive name");
 
             } else if(this.downloadUrls == null || this.downloadUrls.length == 0) {
 
-                Logger.add("You must set at least one url",true);
+                Log.info("You must set at least one url");
             } else {
 
                 this.driveDirectory = cmd.getOptionValue("dir");
@@ -84,11 +93,10 @@ public class UsbDownloader {
                 error = false;
 
             }
-
-
         } catch (ParseException e) {
 
-            Logger.add("Unable to parse program args."+e.getMessage(),true);
+            Log.warning("Unable to parse program args.");
+            Log.error(e.getMessage());
         }
 
         return !error;
@@ -96,7 +104,12 @@ public class UsbDownloader {
 
     public void addOption(String optionKey,String longOptionKey,String optionDescription) {
 
-        this.options.addOption(optionKey,longOptionKey, true, optionDescription);
+        this.addOption(optionKey,longOptionKey, true, optionDescription);
+    }
+
+    public void addOption(String optionKey,String longOptionKey,boolean hasArgs,String optionDescription) {
+
+        this.options.addOption(optionKey,longOptionKey, hasArgs, optionDescription);
     }
 
 }
