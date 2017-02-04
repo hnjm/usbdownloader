@@ -2,19 +2,20 @@ package name.ialert.usbdownloader.logger;
 
 public abstract class AbstractLogger {
 
-    private static LogLevelType DEFAULT_LOG_TYPE = LogLevelType.INFO;
+
+    private static LogLevelType DEFAULT_LOG_LEVEL = LogLevelType.INFO;
 
     private LogLevelType logLevel;
 
     public LogLevelType getLogLevel() {
 
-        if(this.logLevel == null) this.setLogLevel(DEFAULT_LOG_TYPE);
+        if(this.logLevel == null) this.setLogLevel(DEFAULT_LOG_LEVEL);
 
         return this.logLevel;
     }
 
-    public void setLogLevel(LogLevelType levelType) {
+    public void setLogLevel(LogLevelType logLevel) {
 
-       this.logLevel = levelType;
+       this.logLevel = logLevel;
     }
 }

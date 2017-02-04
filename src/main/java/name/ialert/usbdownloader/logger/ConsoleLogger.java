@@ -28,13 +28,13 @@ public class ConsoleLogger extends AbstractLogger implements ILogger {
         this.loggerHandler.addHandler(this.consoleHandler);
     }
 
-    public void setLogLevel(LogLevelType levelType) {
+    public void setLogLevel(LogLevelType logLevel) {
 
-        super.setLogLevel(levelType);
+        super.setLogLevel(logLevel);
 
         Level setupLevel = Level.INFO;
 
-        if(levelType == LogLevelType.DEBUG) {
+        if(logLevel == LogLevelType.DEBUG) {
 
             setupLevel = Level.FINEST;
         }
