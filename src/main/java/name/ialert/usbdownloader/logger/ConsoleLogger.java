@@ -8,12 +8,21 @@ import java.util.logging.Logger;
 
 
 public class ConsoleLogger extends AbstractLogger implements ILogger {
-
+    /**
+     * Singleton Instance
+     */
     private static ConsoleLogger instance;
 
+    /**
+     * Console handler from java.util.logging
+     */
     private ConsoleHandler consoleHandler;
 
+    /**
+     * Logger handler from java.util.logging
+     */
     private Logger loggerHandler;
+
 
     private ConsoleLogger(String className) {
 
@@ -28,6 +37,10 @@ public class ConsoleLogger extends AbstractLogger implements ILogger {
         this.loggerHandler.addHandler(this.consoleHandler);
     }
 
+    /**
+     * Set logger log level
+     * @param logLevel
+     */
     public void setLogLevel(LogLevelType logLevel) {
 
         super.setLogLevel(logLevel);
@@ -44,6 +57,11 @@ public class ConsoleLogger extends AbstractLogger implements ILogger {
 
     }
 
+    /**
+     * Get class instance.Uses for singleton.
+     * @param className
+     * @return
+     */
     public static ConsoleLogger getInstance(String className) {
 
         if(ConsoleLogger.instance == null) ConsoleLogger.instance = new ConsoleLogger(className);
@@ -51,18 +69,30 @@ public class ConsoleLogger extends AbstractLogger implements ILogger {
         return ConsoleLogger.instance;
     }
 
+    /**
+     * Add info message to logger
+     * @param message
+     */
     @Override
     public void info(String message) {
 
         this.loggerHandler.log(Level.INFO,message);
     }
 
+    /**
+     * Add error message to logger
+     * @param message
+     */
     @Override
     public void error(String message) {
 
         this.loggerHandler.log(Level.FINEST,message);
     }
 
+    /**
+     * Add warning message to logger
+     * @param message
+     */
     @Override
     public void warning(String message) {
 

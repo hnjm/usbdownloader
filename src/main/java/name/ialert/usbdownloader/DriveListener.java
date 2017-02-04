@@ -155,7 +155,7 @@ public class DriveListener implements IUSBDriveListener {
     /**
      * Check drive name
      * @param drive
-     * @return true if drive is becessary
+     * @return true if drive is necessary
      */
     protected boolean isNecessaryDrive(USBStorageDevice drive) {
 

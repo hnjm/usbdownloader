@@ -112,7 +112,7 @@ public class FileDownload implements Callable<Void> {
     /**
      * Check time interval to update
      * @param fileDrivePath  file path
-     * @return true if file is needed to update
+     * @return true if file need to be update
      */
     public  boolean isNeedUpdateFile(Path fileDrivePath) {
 
@@ -177,7 +177,7 @@ public class FileDownload implements Callable<Void> {
      * Copy file
      * @param input source stream
      * @param target target path
-     * @return true if copy is succeeded
+     * @return true if copy is done
      */
     protected boolean copyFile(InputStream input,Path target) {
 
