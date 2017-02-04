@@ -59,7 +59,7 @@ public class DriveListener implements IUSBDriveListener {
         this.driveName = driveName;
         this.downloadDirectory = directory;
         this.downloadUrls = urls;
-        this.updateTime = updateTime;
+        this.updateTime = updateTime > 0 ? updateTime : DEFAULT_UPDATE_TIME;
     }
 
     /**
