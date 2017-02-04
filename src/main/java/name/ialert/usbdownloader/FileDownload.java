@@ -105,7 +105,7 @@ public class FileDownload implements Callable<Void> {
 
         } else {
 
-            Log.info("File "+filename+" do not need to update");
+            Log.info("File "+filename+" do not need to be updated");
         }
     }
 
