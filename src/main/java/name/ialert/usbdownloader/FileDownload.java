@@ -16,14 +16,32 @@ import java.util.concurrent.Callable;
 
 public class FileDownload implements Callable<Void> {
 
+    /**
+     * File source path
+     */
     protected String filePath;
 
+    /**
+     * Destination directory
+     */
     protected Path destinationDirectory;
 
+    /**
+     * Time interval to update
+     */
     protected long updateTime;
 
-    private static final ConsoleLogger Log = ConsoleLogger.getInstance(UsbDownloader.class.getName());
+    /**
+     * Log Instance
+     */
+    private static final ConsoleLogger Log = ConsoleLogger.getInstance(FileDownload.class.getName());
 
+    /**
+     *
+     * @param fileUrl File source path
+     * @param destinationDirectory Destination directory
+     * @param updateTime Time interval to update
+     */
     public FileDownload(String fileUrl,String destinationDirectory,long updateTime) {
 
         this.filePath = fileUrl;
@@ -31,16 +49,19 @@ public class FileDownload implements Callable<Void> {
         this.updateTime = updateTime * 1000;
     }
 
-    protected Path getPath(String url) {
+    /**
+     * method calls by ExecutorService
+     */
+    public Void call() {
 
-        return Paths.get(url);
+        this.downloadFile();
+
+        return null;
     }
 
-    protected String getFilename(String url) {
-
-        return url.substring(url.lastIndexOf("/")+1);
-    }
-
+    /**
+     * Main method to download file
+     */
     public void downloadFile() {
 
         String filename = this.getFilename(this.filePath);
@@ -85,6 +106,11 @@ public class FileDownload implements Callable<Void> {
         }
     }
 
+    /**
+     * Check time interval to update
+     * @param fileDrivePath  file path
+     * @return true if file is needed to update
+     */
     public  boolean isNeedUpdateFile(Path fileDrivePath) {
 
         try {
@@ -105,16 +131,51 @@ public class FileDownload implements Callable<Void> {
 
     }
 
+    /**
+     * Get Path Object from string
+     * @param url source url
+     * @return Path Object
+     */
+    protected Path getPath(String url) {
+
+        return Paths.get(url);
+    }
+
+    /**
+     * Get filename from url
+     * @param url source url
+     * @return filename
+     */
+    protected String getFilename(String url) {
+
+        return url.substring(url.lastIndexOf("/")+1);
+    }
+
+    /**
+     * get current unix timestamp
+     * @return unix timestamp,ms
+     */
     protected long getCurrentTime() {
 
         return System.currentTimeMillis();
     }
 
+    /**
+     * Check if path writable
+     * @param directoryPath source path
+     * @return true if path writable
+     */
     protected boolean checkPathWritable(Path directoryPath) {
 
         return (Files.exists(directoryPath) && Files.isWritable(directoryPath));
     }
 
+    /**
+     * Copy file
+     * @param input source stream
+     * @param target target path
+     * @return true if copy is succeeded
+     */
     protected boolean copyFile(InputStream input,Path target) {
 
         try {
@@ -133,10 +194,5 @@ public class FileDownload implements Callable<Void> {
         return false;
     }
 
-    public Void call() {
 
-        this.downloadFile();
-
-        return null;
-    }
 }

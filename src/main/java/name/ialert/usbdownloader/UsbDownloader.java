@@ -8,16 +8,34 @@ import org.apache.commons.cli.*;
 
 public class UsbDownloader {
 
+    /**
+     * Thread wake up interval
+     */
     private static int THREAD_SLEEP_TIME = 5000;
 
+    /**
+     * Supported CLI options
+     */
     private Options options;
 
+    /**
+     * Necessary drive name
+     */
     private String driveName;
 
+    /**
+     * Drive directory
+     */
     private String driveDirectory;
 
+    /**
+     * Urls to download
+     */
     private  String[] downloadUrls;
 
+    /**
+     * Log Instance
+     */
     private static final ConsoleLogger Log = ConsoleLogger.getInstance(UsbDownloader.class.getName());
 
 
@@ -27,6 +45,9 @@ public class UsbDownloader {
 
     }
 
+    /**
+     * @param args CLI args
+     */
     public UsbDownloader(String[] args) {
 
         this.options = new Options();
@@ -49,6 +70,32 @@ public class UsbDownloader {
 
     }
 
+    /**
+     *
+     * @param optionKey CLI option key
+     * @param longOptionKey CLI option long key
+     * @param optionDescription CLI option description
+     */
+    public void addOption(String optionKey,String longOptionKey,String optionDescription) {
+
+        this.addOption(optionKey,longOptionKey, true, optionDescription);
+    }
+
+    /**
+     *
+     * @param optionKey CLI option key
+     * @param longOptionKey CLI option long key
+     * @param hasArgs  CLI option is boolean
+     * @param optionDescription CLI option description
+     */
+    public void addOption(String optionKey,String longOptionKey,boolean hasArgs,String optionDescription) {
+
+        this.options.addOption(optionKey,longOptionKey, hasArgs, optionDescription);
+    }
+
+    /**
+     * Set main thread sleep
+     */
     private void setThreadSleep() {
 
         while(true) {
@@ -63,6 +110,11 @@ public class UsbDownloader {
         }
     }
 
+    /**
+     *
+     * @param args CLI options
+     * @return true if parsing is succeeded
+     */
     private boolean parseArguments(String args[]) {
 
         boolean error = true;
@@ -100,16 +152,6 @@ public class UsbDownloader {
         }
 
         return !error;
-    }
-
-    public void addOption(String optionKey,String longOptionKey,String optionDescription) {
-
-        this.addOption(optionKey,longOptionKey, true, optionDescription);
-    }
-
-    public void addOption(String optionKey,String longOptionKey,boolean hasArgs,String optionDescription) {
-
-        this.options.addOption(optionKey,longOptionKey, hasArgs, optionDescription);
     }
 
 }

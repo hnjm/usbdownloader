@@ -12,21 +12,48 @@ import java.util.concurrent.*;
 
 public class DriveListener implements IUSBDriveListener {
 
-    protected static int MAX_DOWNLOAD_THREAD = 5;
-
+    /**
+     * Necessary drive name
+     */
     protected String driveName;
 
+    /**
+     * Drive directory
+     */
     protected String downloadDirectory;
 
+    /**
+     * Urls to download
+     */
     protected  String[] downloadUrls;
 
+    /**
+     * Time interval to update
+     */
     protected long updateTime;
 
-    protected final static long DEFAULT_UPDATE_TIME = 86400;
+    /**
+     * Max thread to download streams
+     */
+    protected static int MAX_DOWNLOAD_THREAD = 5;
 
+    /**
+     * Default files update interval
+     */
+    private final static long DEFAULT_UPDATE_TIME = 86400;
+
+    /**
+     * Log instance
+     */
     private static final ConsoleLogger Log = ConsoleLogger.getInstance(DriveListener.class.getName());
 
 
+    /**
+     * @param driveName Drive name
+     * @param directory Drive directory
+     * @param urls Urls to download
+     * @param updateTime Time interval to update
+     */
     public DriveListener(String driveName,String directory,String[] urls,long updateTime) {
 
         this.driveName = driveName;
@@ -35,6 +62,11 @@ public class DriveListener implements IUSBDriveListener {
         this.updateTime = updateTime;
     }
 
+    /**
+     * @param driveName Drive name
+     * @param directory Drive directory
+     * @param urls Urls to download
+     */
     public DriveListener(String driveName,String directory,String[] urls) {
 
         this.driveName = driveName;
@@ -43,6 +75,10 @@ public class DriveListener implements IUSBDriveListener {
         this.updateTime = DEFAULT_UPDATE_TIME;
     }
 
+    /**
+     * Drive connect/remove event listener
+     * @param event flash drive connect/remove event
+     */
     public void usbDriveEvent(USBStorageEvent event) {
 
         DeviceEventType eventType = event.getEventType();
@@ -62,6 +98,10 @@ public class DriveListener implements IUSBDriveListener {
 
     }
 
+    /**
+     * Download files
+     * @param drive drive object
+     */
     protected void downloadFiles(USBStorageDevice drive) {
 
         int filesCount = this.downloadUrls.length;
@@ -91,7 +131,11 @@ public class DriveListener implements IUSBDriveListener {
         }
     }
 
-
+    /**
+     * Get drive directory path from object
+     * @param drive
+     * @return drive directory
+     */
     protected String getDriveDirectoryPath(USBStorageDevice drive) {
 
         String path = "";
@@ -108,6 +152,11 @@ public class DriveListener implements IUSBDriveListener {
         return path;
     }
 
+    /**
+     * Check drive name
+     * @param drive
+     * @return true if drive is becessary
+     */
     protected boolean isNecessaryDrive(USBStorageDevice drive) {
 
         return drive.getDeviceName().equals(this.driveName);
