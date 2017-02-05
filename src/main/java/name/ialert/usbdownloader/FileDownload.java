@@ -35,7 +35,7 @@ public class FileDownload implements Callable<Void> {
     /**
      * Log Instance
      */
-    private static final AbstractLogger Log = CurrentLogger.getInstance(UsbDownloader.class.getName());
+    private static final AbstractLogger Log = CurrentLogger.getInstance(FileDownload.class.getName());
 
     /**
      *

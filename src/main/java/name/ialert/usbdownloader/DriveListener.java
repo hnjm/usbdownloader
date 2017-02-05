@@ -46,7 +46,7 @@ public class DriveListener implements IUSBDriveListener {
     /**
      * Log instance
      */
-    private static final AbstractLogger Log = CurrentLogger.getInstance(UsbDownloader.class.getName());
+    private static final AbstractLogger Log = CurrentLogger.getInstance(DriveListener.class.getName());
 
 
     /**
