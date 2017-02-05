@@ -34,6 +34,11 @@ public class UsbDownloader {
     private  String[] downloadUrls;
 
     /**
+     * Update time interval
+     */
+    private long updateTime;
+
+    /**
      * Log Instance
      */
     private static final ConsoleLogger Log = ConsoleLogger.getInstance(UsbDownloader.class.getName());
@@ -56,12 +61,13 @@ public class UsbDownloader {
         this.addOption("dir","directory","Drive directory");
         this.addOption("u","urls","Download url");
         this.addOption("debug","enable-debug",false,"Enable debug log");
+        this.addOption("i","interval","Set updating time interval");
 
         if(this.parseArguments(args)) {
 
             USBDeviceDetectorManager driveDetector = new USBDeviceDetectorManager();
 
-            DriveListener dListener = new DriveListener(this.driveName,this.driveDirectory,this.downloadUrls);
+            DriveListener dListener = new DriveListener(this.driveName,this.driveDirectory,this.downloadUrls,this.updateTime);
 
             driveDetector.addDriveListener(dListener);
 
@@ -141,6 +147,13 @@ public class UsbDownloader {
             } else {
 
                 this.driveDirectory = cmd.getOptionValue("dir");
+
+                String updateTime = cmd.getOptionValue("i");
+
+                if(updateTime != null && updateTime.matches("^\\d+$")) {
+
+                    this.updateTime = Long.parseLong(updateTime);
+                }
 
                 error = false;
 
