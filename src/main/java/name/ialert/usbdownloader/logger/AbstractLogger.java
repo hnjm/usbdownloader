@@ -1,6 +1,6 @@
 package name.ialert.usbdownloader.logger;
 
-public abstract class AbstractLogger {
+public abstract class AbstractLogger implements ILogger{
 
     /**
      * Default Log level.Set to INFO
@@ -31,4 +31,22 @@ public abstract class AbstractLogger {
 
        this.logLevel = logLevel;
     }
+
+    /**
+     * Add warning message to logger
+     * @param message
+     */
+    public abstract void warning(String message);
+
+    /**
+     * Add info message to logger
+     * @param message
+     */
+    public abstract void info(String message);
+
+    /**
+     * Add error message to logger
+     * @param message
+     */
+    public abstract void error(String message);
 }

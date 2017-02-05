@@ -1,7 +1,8 @@
 package name.ialert.usbdownloader;
 
 
-import name.ialert.usbdownloader.logger.ConsoleLogger;
+import name.ialert.usbdownloader.logger.AbstractLogger;
+import name.ialert.usbdownloader.logger.CurrentLogger;
 import net.samuelcampos.usbdrivedectector.USBStorageDevice;
 import net.samuelcampos.usbdrivedectector.events.DeviceEventType;
 import net.samuelcampos.usbdrivedectector.events.IUSBDriveListener;
@@ -45,7 +46,7 @@ public class DriveListener implements IUSBDriveListener {
     /**
      * Log instance
      */
-    private static final ConsoleLogger Log = ConsoleLogger.getInstance(DriveListener.class.getName());
+    private static final AbstractLogger Log = CurrentLogger.getInstance(UsbDownloader.class.getName());
 
 
     /**

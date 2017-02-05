@@ -1,5 +1,7 @@
-package name.ialert.usbdownloader.logger;
+package name.ialert.usbdownloader.logger.console;
 
+import name.ialert.usbdownloader.logger.AbstractLogger;
+import name.ialert.usbdownloader.logger.LogLevelType;
 import name.ialert.usbdownloader.logger.jul.CustomFormatter;
 
 import java.util.logging.ConsoleHandler;
@@ -7,7 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-public class ConsoleLogger extends AbstractLogger implements ILogger {
+public class ConsoleLogger extends AbstractLogger {
     /**
      * Singleton Instance
      */
