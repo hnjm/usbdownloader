@@ -1,7 +1,8 @@
 package name.ialert.usbdownloader;
 
 
-import name.ialert.usbdownloader.logger.ConsoleLogger;
+import name.ialert.usbdownloader.logger.AbstractLogger;
+import name.ialert.usbdownloader.logger.CurrentLogger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,7 +35,7 @@ public class FileDownload implements Callable<Void> {
     /**
      * Log Instance
      */
-    private static final ConsoleLogger Log = ConsoleLogger.getInstance(FileDownload.class.getName());
+    private static final AbstractLogger Log = CurrentLogger.getInstance(FileDownload.class.getName());
 
     /**
      *
