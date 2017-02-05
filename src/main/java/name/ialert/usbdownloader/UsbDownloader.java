@@ -1,7 +1,8 @@
 package name.ialert.usbdownloader;
 
 
-import name.ialert.usbdownloader.logger.ConsoleLogger;
+import name.ialert.usbdownloader.logger.AbstractLogger;
+import name.ialert.usbdownloader.logger.CurrentLogger;
 import name.ialert.usbdownloader.logger.LogLevelType;
 import net.samuelcampos.usbdrivedectector.USBDeviceDetectorManager;
 import org.apache.commons.cli.*;
@@ -41,7 +42,7 @@ public class UsbDownloader {
     /**
      * Log Instance
      */
-    private static final ConsoleLogger Log = ConsoleLogger.getInstance(UsbDownloader.class.getName());
+    private static final AbstractLogger Log = CurrentLogger.getInstance(UsbDownloader.class.getName());
 
 
     public static void main(String[] args) {
